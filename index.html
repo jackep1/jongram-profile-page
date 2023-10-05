@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE-edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A3 Authentication</title>
+    <style>
+        body {
+            text-align: center;
+            background-color: rgb(63, 63, 63);
+            color: rgb(215, 215, 227);
+            padding: 0;
+            margin: 0;
+        }
+        #logoBanner {
+            height: 100px;
+            background-color: rgb(95, 76, 62);
+        }
+        #enterDetails {
+            float: left;
+            width: 50%;
+            height: 500px;
+            background-color:rgb(101, 78, 83);
+        }
+        #findDetails{
+            float: left;
+            width: 50%;
+            height: 500px;
+            background-color:rgb(117, 109, 63);
+        }
+        img {
+            height: 100px;
+        }
+        iframe {
+            border: none;
+            padding-top: 25px;
+        }
+        .profile {
+            width: 40%;
+            background-color: rgb(95, 76, 62);
+            margin: 5%;
+        }
+        #profileOne {
+            float: left;
+        }
+        #profileTwo {
+            float: right;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="logoBanner">
+        <img src="../../Images/jongram-logo-brown.png">
+    </div>
+    <!--
+    <div id="enterDetails">
+        <h1>Enter Details</h1>
+
+        <h4>ID</h4>
+        <input id="enterID" type="text">
+
+        <h4>Name</h4>
+        <input id="enterName" type="text">
+        
+        <h4>Age</h4>
+        <input id="enterAge" type="number">
+
+        <br><br>
+        <button id="insert">INSERT</button>
+        <button id="update">UPDATE</button>
+        <button id="remove">REMOVE</button>
+    </div>
+    <div id = "findDetails">
+        <h1>Find Details</h1>
+
+        <h4>ID</h4>
+        <input id="findID" type="text"> <br><br>
+        <button id="find">FIND</button>
+
+        <br><br>
+
+    </div>
+    -->
+    <div>
+        <div id="profileOne" class="profile">
+            <h3>User One</h3>
+            <h3 id="foundNameOne" type="text"></h3>
+            <h3 id="foundAgeOne" type="text"></h3>
+            <h3 id="foundLocationOne" type="text"></h3>
+            <h3 id="foundOccupationOne" type="text"></h3>
+            <img id="profilePicOne">
+        </div>
+        <div id="profileTwo" class="profile">
+            <h3>User Two</h3>
+            <h3 id="foundNameTwo" type="text"></h3>
+            <h3 id="foundAgeTwo" type="text"></h3>
+            <h3 id="foundLocationTwo" type="text"></h3>
+            <h3 id="foundOccupationTwo" type="text"></h3>
+            <img id="profilePicTwo">
+        </div>
+
+    </div>
+
+    <iframe src="https://thunkable.site/w/A3rBsTlFaxiHkLAWzVZik" title="Chop Down the Tree Thunkable App" height = 1000 width = 500></iframe>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import { getDatabase, set, get, update, remove, ref, child, push } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+          apiKey: "AIzaSyCRX6Y-lkvEk5H4-peSJCeHgJ9j7RJQ9Uo",
+          authDomain: "profile-app-6be60.firebaseapp.com",
+          databaseURL: "https://profile-app-6be60-default-rtdb.firebaseio.com",
+          projectId: "profile-app-6be60",
+          storageBucket: "profile-app-6be60.appspot.com",
+          messagingSenderId: "78959085044",
+          appId: "1:78959085044:web:dae79d5e7d6771bd1225a1",
+          measurementId: "G-5GHF5T6T70"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+
+        const db = getDatabase();
+        const dbRef = ref(db);
+        var enterID = document.querySelector("#enterID");
+        var enterName = document.querySelector("#enterName");
+        var enterAge = document.querySelector("#enterAge");
+        var findID = document.querySelector("#findID");
+
+        var foundNameOne = document.querySelector("#foundNameOne");
+        var foundAgeOne = document.querySelector("#foundAgeOne");
+        var foundLocationOne = document.querySelector("#foundLocationOne");
+        var foundOccupationOne = document.querySelector("#foundOccupationOne");
+        var profilePicOne = document.querySelector("#profilePicOne");
+
+        var foundNameTwo = document.querySelector("#foundNameTwo");
+        var foundAgeTwo = document.querySelector("#foundAgeTwo");
+        var foundLocationTwo = document.querySelector("#foundLocationTwo");
+        var foundOccupationTwo = document.querySelector("#foundOccupationTwo");
+        var profilePicTwo = document.querySelector("#profilePicTwo");
+
+        var insertBtn = document.querySelector("#insert");
+        var updateBtn = document.querySelector("#update");
+        var removeBtn = document.querySelector("#remove");
+        var findBtn = document.querySelector("#find");
+
+        function insertData() {
+            set(ref(db, enterID.value), {
+                name: enterName.value,
+                ID: enterID.value,
+                age: enterAge.value
+            })
+            .then(() => {
+                alert("Data added successfully!")
+            })
+            .catch((error) => {
+                alert(error)
+            })
+        }
+
+        function updateData() {
+            update(ref(db, enterID.value), {
+                name: enterName.value,
+                age: enterAge.value,
+            })
+            .then(() => {
+                alert("Data updated succesfully")
+            })
+            .catch ((error) => {
+                alert(error)
+            })
+        }
+
+        function removeData() {
+            remove(ref(db, enterID.value))
+            .then(() => {
+                alert("Data removed successfully")
+            })
+            .catch((error) => {
+                alert(error)
+            })
+        }
+
+        function findDataOne() {
+            const dbref = ref(db);
+
+            get(child(dbref, "WuTcIEgi16ZnyUbBEQgctfSMpNG2"))
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    foundNameOne.innerHTML = "Name: " + snapshot.val().name;
+                    foundAgeOne.innerHTML = "Age: " + snapshot.val().age;
+                    foundLocationOne.innerHTML = "Location: " + snapshot.val().location;
+                    foundOccupationOne.innerHTML = "Occupation: " + snapshot.val().occupation;
+                    profilePicOne.setAttribute("src", snapshot.val().image);
+                } else {
+                    alert("No data found");
+                }
+            })
+            .catch((error) => {
+                alert(error)
+            })
+        }
+
+        function findDataTwo() {
+            const dbref = ref(db);
+            
+            get(child(dbref, "hQqfX4tYAiQ1GEjgrGNNBSDZMzg2"))
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    foundNameTwo.innerHTML = "Name: " + snapshot.val().name;
+                    foundAgeTwo.innerHTML = "Age: " + snapshot.val().age;
+                    foundLocationTwo.innerHTML = "Location: " + snapshot.val().location;
+                    foundOccupationTwo.innerHTML = "Occupation: " + snapshot.val().occupation;
+                    profilePicTwo.setAttribute("src", snapshot.val().image);
+                } else {
+                    alert("No data found");
+                }
+            })
+            .catch((error) => {
+                alert(error)
+            })
+        }
+
+        findDataOne();
+        findDataTwo();
+
+        //insertBtn.addEventListener('click', insertData());
+        //updateBtn.addEventListener('click', updateData());
+        //removeBtn.addEventListener('click', removeData());
+        //findBtn.addEventListener("click", findData());
+
+      </script>
+
+</body>
+</html>
